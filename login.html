@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lumora – Login</title>
+  <style>
+    body {
+      background: #0b1d51;
+      color: #f6c26a;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+    }
+    nav {
+      background: #1e1e2f;
+      padding: 0.75rem 2rem;
+      display: flex;
+      gap: 1.5rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    nav a {
+      color: #f6c26a;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      align-self: center;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .login-container {
+      background: #1e1e2f;
+      padding: 2rem 3rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(246, 194, 106, 0.5);
+      width: 320px;
+      margin-top: 3rem;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 1.5rem;
+    }
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1.2rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      background: #f6c26a;
+      color: #0b1d51;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #d4a841;
+    }
+    .signup-link {
+      margin-top: 1rem;
+      color: #f6c26a;
+      font-size: 0.9rem;
+    }
+    .signup-link a {
+      color: #f6c26a;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html">Sign Up</a>
+    <a href="dashboard.html">Dashboard</a>
+  </nav>
+  <div class="login-container">
+    <h2>Login to Lumora</h2>
+    <form id="loginForm">
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="password" name="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <div class="signup-link">
+      Don’t have an account? <a href="signup.html">Sign Up</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDBOv4bYXpJA5q2-CS4D3KnAlg_Ycue738",
+      authDomain: "lumora-f1e92.firebaseapp.com",
+      projectId: "lumora-f1e92",
+      storageBucket: "lumora-f1e92.firebasestorage.app",
+      messagingSenderId: "670267015816",
+      appId: "1:670267015816:web:5d34ca7594d33a74e7553d",
+      measurementId: "G-084ZNBWDV9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Redirect to dashboard if already logged in
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        window.location.href = 'dashboard.html';
+      }
+    });
+
+    const loginForm = document.getElementById('loginForm');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = loginForm.email.value.trim();
+      const password = loginForm.password.value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+  </script>
+</body>
+</html>

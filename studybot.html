@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lumora – StudyBot</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1d51;
+      color: #f6c26a;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    nav {
+      background: #1e1e2f;
+      padding: 0.75rem 2rem;
+      display: flex;
+      gap: 1.5rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    nav a {
+      color: #f6c26a;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      align-self: center;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    header {
+      background: #1e1e2f;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 5px rgba(246, 194, 106, 0.3);
+    }
+    main {
+      flex: 1;
+      padding: 1rem 2rem;
+      display: flex;
+      flex-direction: column;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    #chatWindow {
+      flex: 1;
+      background: #1e1e2f;
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-y: auto;
+      height: 400px;
+      margin-bottom: 1rem;
+      border: 1px solid #d4a841;
+    }
+    .message {
+      margin-bottom: 1rem;
+    }
+    .message.user {
+      text-align: right;
+      color: #f6c26a;
+    }
+    .message.bot {
+      text-align: left;
+      color: #d4a841;
+    }
+    #inputArea {
+      display: flex;
+      gap: 0.5rem;
+    }
+    #userInput {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: none;
+      font-size: 1rem;
+    }
+    #sendBtn {
+      background: #f6c26a;
+      border: none;
+      color: #0b1d51;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+    #sendBtn:hover {
+      background: #d4a841;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="studybot.html">StudyBot</a>
+  </nav>
+  <header>
+    <h1>StudyBot</h1>
+  </header>
+  <main>
+    <div id="chatWindow"></div>
+    <div id="inputArea">
+      <input type="text" id="userInput" placeholder="Ask me anything about your studies..." />
+      <button id="sendBtn">Send</button>
+    </div>
+  </main>
+
+  <script>
+    const chatWindow = document.getElementById('chatWindow');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function appendMessage(text, sender) {
+      const div = document.createElement('div');
+      div.classList.add('message', sender);
+      div.textContent = text;
+      chatWindow.appendChild(div);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', async () => {
+      const question = userInput.value.trim();
+      if (!question) return;
+      appendMessage(question, 'user');
+      userInput.value = '';
+
+      appendMessage("Thinking...", 'bot');
+
+      try {
+        const response = await fetch('http://localhost:3000/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: question }),
+        });
+
+        const data = await response.json();
+
+        // Remove "Thinking..." message
+        const thinking = chatWindow.querySelector('.message.bot:last-child');
+        if (thinking && thinking.textContent === "Thinking...") {
+          thinking.remove();
+        }
+
+        if (data.reply) {
+          appendMessage(data.reply, 'bot');
+        } else {
+          appendMessage("Sorry, I couldn't get a response.", 'bot');
+        }
+      } catch (error) {
+        // Remove "Thinking..." message
+        const thinking = chatWindow.querySelector('.message.bot:last-child');
+        if (thinking && thinking.textContent === "Thinking...") {
+          thinking.remove();
+        }
+
+        appendMessage("Error connecting to server.", 'bot');
+      }
+    });
+
+    // Optional: send message on Enter key press
+    userInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendBtn.click();
+    });
+  </script>
+</body>
+</html>

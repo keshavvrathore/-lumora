@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lumora – Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1d51;
+      color: #f6c26a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    nav {
+      background: #1e1e2f;
+      padding: 0.75rem 2rem;
+      display: flex;
+      gap: 1.5rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    nav a {
+      color: #f6c26a;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      align-self: center;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    header {
+      background: #1e1e2f;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(246, 194, 106, 0.3);
+    }
+    header h1 {
+      margin: 0;
+      font-weight: 700;
+      font-size: 1.5rem;
+    }
+    #logoutBtn {
+      background: #f6c26a;
+      border: none;
+      color: #0b1d51;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1rem;
+      margin-left: auto;
+      transition: background 0.3s ease;
+    }
+    #logoutBtn:hover {
+      background: #d4a841;
+    }
+    main {
+      flex: 1;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: #1e1e2f;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px rgba(246, 194, 106, 0.4);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(246, 194, 106, 0.7);
+    }
+    .card h2 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.2rem;
+    }
+    .card p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #d4a841;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html">Sign Up</a>
+    <a href="dashboard.html">Dashboard</a>
+  </nav>
+  <header>
+    <h1 id="welcomeMsg">Welcome, User!</h1>
+    <button id="logoutBtn">Logout</button>
+  </header>
+  <main>
+    <div class="card" onclick="window.location.href='studybot.html'">
+      <h2>📚 StudyBot</h2>
+      <p>Summaries, quizzes, and study help</p>
+    </div>
+    <div class="card" onclick="alert('MoneyBot coming soon!')">
+      <h2>📈 MoneyBot</h2>
+      <p>Earn, budget, and manage money tips</p>
+    </div>
+    <div class="card" onclick="alert('FocusBot coming soon!')">
+      <h2>🎯 FocusBot</h2>
+      <p>Daily schedules and reminders</p>
+    </div>
+    <div class="card" onclick="alert('HealthBot coming soon!')">
+      <h2>🏋️ HealthBot</h2>
+      <p>Workout and diet suggestions</p>
+    </div>
+    <div class="card" onclick="alert('CreatorBot coming soon!')">
+      <h2>🎨 CreatorBot</h2>
+      <p>Content ideas and captions</p>
+    </div>
+    <div class="card" onclick="alert('QR Code Generator coming soon!')">
+      <h2>🔗 QR Code Generator</h2>
+      <p>Create quick QR codes</p>
+    </div>
+    <div class="card" onclick="alert('Password Generator coming soon!')">
+      <h2>🔑 Password Generator</h2>
+      <p>Generate strong passwords</p>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDBOv4bYXpJA5q2-CS4D3KnAlg_Ycue738",
+      authDomain: "lumora-f1e92.firebaseapp.com",
+      projectId: "lumora-f1e92",
+      storageBucket: "lumora-f1e92.firebasestorage.app",
+      messagingSenderId: "670267015816",
+      appId: "1:670267015816:web:5d34ca7594d33a74e7553d",
+      measurementId: "G-084ZNBWDV9"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const welcomeMsg = document.getElementById('welcomeMsg');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else {
+        const name = user.displayName || user.email;
+        welcomeMsg.textContent = `Welcome, ${name}!`;
+      }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      const confirmed = confirm("Are you sure you want to logout?");
+      if (confirmed) {
+        signOut(auth)
+          .then(() => {
+            window.location.href = 'login.html';
+          })
+          .catch((error) => {
+            alert('Error signing out: ' + error.message);
+          });
+      }
+    });
+  </script>
+</body>
+</html>

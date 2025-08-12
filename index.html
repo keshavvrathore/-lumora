@@ -12,9 +12,36 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       height: 100vh;
       margin: 0;
+    }
+    nav {
+      background: #1e1e2f;
+      padding: 0.75rem 2rem;
+      display: flex;
+      gap: 1.5rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    nav a {
+      color: #f6c26a;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      align-self: center;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 2rem;
     }
     h1 {
       font-weight: 700;
@@ -37,8 +64,16 @@
   </style>
 </head>
 <body>
-  <h1>Welcome to Lumora</h1>
-  <p>Your AI Companion for Real Life</p>
-  <button>Sign Up Free</button>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html">Sign Up</a>
+    <a href="dashboard.html">Dashboard</a>
+  </nav>
+  <main>
+    <h1>Welcome to Lumora</h1>
+    <p>Your AI Companion for Real Life</p>
+    <button>Sign Up Free</button>
+  </main>
 </body>
 </html>
